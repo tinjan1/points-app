@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Points App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 60px;
+      background-color: #f4f4f4;
+    }
+
+    #score {
+      font-size: 50px;
+      margin: 20px;
+    }
+
+    #count {
+      font-size: 20px;
+      color: #555;
+    }
+
+    button {
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .add {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .undo {
+      background-color: #f39c12;
+      color: white;
+    }
+
+    .undo:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .reset {
+      background-color: #e74c3c;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Points App</h1>
+
+  <div id="score">0</div>
+  <div id="count">Tasks Done: 0</div>
+
+  <button class="add" onclick="addPoint(9225)">Add +9225</button>
+  <br>
+  <button class="undo" id="undoBtn" onclick="undo()">Undo</button>
+  <button class="reset" onclick="reset()">Reset</button>
+
+  <script>
+    // Load saved values from localStorage or use defaults
+    let score = parseInt(localStorage.getItem('score')) || 0;
+    let pressCount = parseInt(localStorage.getItem('pressCount')) || 0;
+    let lastAction = parseInt(localStorage.getItem('lastAction')) || 0;
+    let undoUsed = localStorage.getItem('undoUsed') === 'true';
+
+    function updateUI() {
+      document.getElementById("score").innerText = score;
+      document.getElementById("count").innerText = "Tasks Done: " + pressCount;
+      document.getElementById("undoBtn").disabled = undoUsed;
+
+      // Save to localStorage
+      localStorage.setItem('score', score);
+      localStorage.setItem('pressCount', pressCount);
+      localStorage.setItem('lastAction', lastAction);
+      localStorage.setItem('undoUsed', undoUsed);
+    }
+
+    function addPoint(value) {
+      score += value;
+      pressCount += 1;
+
+      lastAction = value;
+      undoUsed = false;
+
+      updateUI();
+    }
+
+    function undo() {
+      if (!undoUsed && lastAction !== 0) {
+        score = Math.max(0, score - lastAction);
+        pressCount = Math.max(0, pressCount - 1);
+
+        undoUsed = true;
+        lastAction = 0;
+
+        updateUI();
+      }
+    }
+
+    function reset() {
+      score = 0;
+      pressCount = 0;
+      lastAction = 0;
+      undoUsed = true;
+
+      updateUI();
+    }
+
+    // Initialize UI on page load
+    updateUI();
+  </script>
+
+</body>
+</html>

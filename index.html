@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <title>Points App</title>
 
-  <!-- Manifest link -->
+  <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4CAF50">
+
+  <!-- Make app responsive on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
@@ -53,6 +56,20 @@
     .reset {
       background-color: #e74c3c;
       color: white;
+    }
+
+    /* Mobile adjustments for screens smaller than 600px */
+    @media (max-width: 600px) {
+      #score {
+        font-size: 70px;
+      }
+      #count {
+        font-size: 24px;
+      }
+      button {
+        padding: 20px 30px;
+        font-size: 22px;
+      }
     }
   </style>
 </head>
@@ -116,5 +133,6 @@
     // Initialize UI on page load
     updateUI();
   </script>
+
 </body>
 </html>

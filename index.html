@@ -2,12 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Points App</title>
-
-  <!-- PWA manifest for home screen icon -->
-  <link rel="manifest" href="manifest.json">
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,7 +14,6 @@
     #score {
       font-size: 50px;
       margin: 20px;
-      color: #333;
     }
 
     #count {
@@ -66,26 +60,35 @@
 
   <button class="add" onclick="addPoint(9225)">Add +9225</button>
   <br>
-  <button class="undo" id="undoBtn" onclick="undo()" disabled>Undo</button>
+  <button class="undo" id="undoBtn" onclick="undo()">Undo</button>
   <button class="reset" onclick="reset()">Reset</button>
 
   <script>
-    let score = 0;
-    let pressCount = 0;
-    let lastAction = 0;
-    let undoUsed = true;
+    // Load saved values from localStorage or use defaults
+    let score = parseInt(localStorage.getItem('score')) || 0;
+    let pressCount = parseInt(localStorage.getItem('pressCount')) || 0;
+    let lastAction = parseInt(localStorage.getItem('lastAction')) || 0;
+    let undoUsed = localStorage.getItem('undoUsed') === 'true';
 
     function updateUI() {
       document.getElementById("score").innerText = score;
       document.getElementById("count").innerText = "Tasks Done: " + pressCount;
       document.getElementById("undoBtn").disabled = undoUsed;
+
+      // Save to localStorage
+      localStorage.setItem('score', score);
+      localStorage.setItem('pressCount', pressCount);
+      localStorage.setItem('lastAction', lastAction);
+      localStorage.setItem('undoUsed', undoUsed);
     }
 
     function addPoint(value) {
       score += value;
       pressCount += 1;
+
       lastAction = value;
       undoUsed = false;
+
       updateUI();
     }
 
@@ -93,8 +96,10 @@
       if (!undoUsed && lastAction !== 0) {
         score = Math.max(0, score - lastAction);
         pressCount = Math.max(0, pressCount - 1);
+
         undoUsed = true;
         lastAction = 0;
+
         updateUI();
       }
     }
@@ -104,8 +109,12 @@
       pressCount = 0;
       lastAction = 0;
       undoUsed = true;
+
       updateUI();
     }
+
+    // Initialize UI on page load
+    updateUI();
   </script>
 
 </body>
